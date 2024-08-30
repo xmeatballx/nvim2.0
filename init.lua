@@ -1,10 +1,62 @@
+local is_mac = vim.fn.has("macunix") == 1
+
+if is_mac then
+  -- Lazy.nvim setup for macOS
+  local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+  if not vim.loop.fs_stat(lazypath) then
+    vim.fn.system({
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "https://github.com/folke/lazy.nvim.git",
+      "--branch=stable", -- latest stable release
+      lazypath,
+    })
+  end
+  vim.opt.rtp:prepend(lazypath)
+
+  require('lazy').setup({
+    -- Telescope
+    { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
+    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    { "nvim-neo-tree/neo-tree.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
+    -- Bufferline
+    { "akinsho/bufferline.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
+    -- Comment
+    { "numToStr/Comment.nvim" },
+    -- Language Servers
+    { "neovim/nvim-lspconfig" },
+    -- Treesitter
+    { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" },
+    -- Completion
+    { "hrsh7th/nvim-cmp" },
+    { "hrsh7th/cmp-buffer" },
+    { "hrsh7th/cmp-path" },
+    { "saadparwaiz1/cmp_luasnip" },
+    { "L3MON4D3/LuaSnip" },
+    { "rafamadriz/friendly-snippets" },
+    -- LSP Configs
+    { "williamboman/mason.nvim" },
+    { "williamboman/mason-lspconfig.nvim" },
+    -- Indent Blankline
+    { "lukas-reineke/indent-blankline.nvim" },
+    -- Catppuccin theme
+    { "catppuccin/nvim", name = "catppuccin" },
+    -- Additional plugins
+    { "tpope/vim-surround" },
+    { "tpope/vim-commentary" },
+    { "tpope/vim-repeat" },
+    { "tpope/vim-fugitive" },
+    -- Add other plugins here
+  })
+end
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 -- vim.keymap.set("", "<Space>", "<Nop>")
 vim.g.mapleader = ' '
 -- vim.g.maplocalleader = ' '
-
 -- Set to true if you have a Nerd Font installed
 vim.g.have_nerd_font = true
 
@@ -28,25 +80,30 @@ vim.opt.showmode = false
 vim.diagnostic.config({ update_in_insert = true })
 
 -- Disable Netrw when opening a directory
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_netrw = 0
+vim.g.loaded_netrwPlugin = 0
 
 local is_git_dir = function()
-  return os.execute('git rev-parse --is-inside-work-tree >> /dev/null 2>&1')
+  local handle = io.popen('git rev-parse --is-inside-work-tree 2>/dev/null')
+  local result = handle:read("*a")
+  handle:close()
+  return result ~= ""
 end
 
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function()
-    local bufferPath = vim.fn.expand('%:p')
-    if vim.fn.isdirectory(bufferPath) ~= 0 then
-      local ts_builtin = require('telescope.builtin')
-      vim.api.nvim_buf_delete(0, { force = true })
-      if is_git_dir() == 0 then
-        ts_builtin.git_files({ show_untracked = true })
-      else
-        ts_builtin.find_files()
+    vim.schedule(function()
+      local bufferPath = vim.fn.expand('%:p')
+      if vim.fn.isdirectory(bufferPath) ~= 0 then
+        local ts_builtin = require('telescope.builtin')
+        vim.api.nvim_buf_delete(0, { force = true })
+        if is_git_dir() then
+          ts_builtin.git_files({ show_untracked = true })
+        else
+          ts_builtin.find_files()
+        end
       end
-    end
+    end)
   end,
 })
 
@@ -158,108 +215,4 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
     vim.highlight.on_yank()
   end,
-})local is_mac = vim.fn.has("macunix") == 1
-
-if is_mac then
-  -- Lazy.nvim setup for macOS
-  local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-  if not vim.loop.fs_stat(lazypath) then
-    vim.fn.system({
-      "git",
-      "clone",
-      "--filter=blob:none",
-      "https://github.com/folke/lazy.nvim.git",
-      "--branch=stable", -- latest stable release
-      lazypath,
-    })
-  end
-  vim.opt.rtp:prepend(lazypath)
-
-  require('lazy').setup({
-    -- Telescope
-    { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-    { "nvim-neo-tree/neo-tree.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
-    -- Bufferline
-    { "akinsho/bufferline.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
-    -- Comment
-    { "numToStr/Comment.nvim" },
-    -- Language Servers
-    { "neovim/nvim-lspconfig" },
-    -- Treesitter
-    { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" },
-    -- Completion
-    { "hrsh7th/nvim-cmp" },
-    { "hrsh7th/cmp-buffer" },
-    { "hrsh7th/cmp-path" },
-    { "saadparwaiz1/cmp_luasnip" },
-    { "L3MON4D3/LuaSnip" },
-    { "rafamadriz/friendly-snippets" },
-    -- LSP Configs
-    { "williamboman/mason.nvim" },
-    { "williamboman/mason-lspconfig.nvim" },
-    -- Indent Blankline
-    { "lukas-reineke/indent-blankline.nvim" },
-    -- Catppuccin theme
-    { "catppuccin/nvim", name = "catppuccin" },
-    -- Additional plugins
-    { "tpope/vim-surround" },
-    { "tpope/vim-commentary" },
-    { "tpope/vim-repeat" },
-    { "tpope/vim-fugitive" },
-    -- Add other plugins here
-  })
-end
-
-local is_mac = vim.fn.has("macunix") == 1
-
-if is_mac then
-  -- Lazy.nvim setup for macOS
-  local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-  if not vim.loop.fs_stat(lazypath) then
-    vim.fn.system({
-      "git",
-      "clone",
-      "--filter=blob:none",
-      "https://github.com/folke/lazy.nvim.git",
-      "--branch=stable", -- latest stable release
-      lazypath,
-    })
-  end
-  vim.opt.rtp:prepend(lazypath)
-
-  require('lazy').setup({
-    -- Telescope
-    { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-    { "nvim-neo-tree/neo-tree.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
-    -- Bufferline
-    { "akinsho/bufferline.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
-    -- Comment
-    { "numToStr/Comment.nvim" },
-    -- Language Servers
-    { "neovim/nvim-lspconfig" },
-    -- Treesitter
-    { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" },
-    -- Completion
-    { "hrsh7th/nvim-cmp" },
-    { "hrsh7th/cmp-buffer" },
-    { "hrsh7th/cmp-path" },
-    { "saadparwaiz1/cmp_luasnip" },
-    { "L3MON4D3/LuaSnip" },
-    { "rafamadriz/friendly-snippets" },
-    -- LSP Configs
-    { "williamboman/mason.nvim" },
-    { "williamboman/mason-lspconfig.nvim" },
-    -- Indent Blankline
-    { "lukas-reineke/indent-blankline.nvim" },
-    -- Catppuccin theme
-    { "catppuccin/nvim", name = "catppuccin" },
-    -- Additional plugins
-    { "tpope/vim-surround" },
-    { "tpope/vim-commentary" },
-    { "tpope/vim-repeat" },
-    { "tpope/vim-fugitive" },
-    -- Add other plugins here
-  })
-end
+})
