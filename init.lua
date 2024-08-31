@@ -15,6 +15,7 @@ if is_mac then
     end
     vim.opt.rtp:prepend(lazypath)
 
+
     require('lazy').setup({
             -- Telescope
             { "nvim-telescope/telescope.nvim",            dependencies = { "nvim-lua/plenary.nvim" } },
@@ -50,14 +51,32 @@ if is_mac then
             -- Indent Blankline
             { "lukas-reineke/indent-blankline.nvim" },
             -- Catppuccin theme
-            { "catppuccin/nvim",                    name = "catppuccin" },
+            { "catppuccin/nvim" },
             -- Additional plugins
             { "tpope/vim-surround" },
             { "tpope/vim-commentary" },
             { "tpope/vim-repeat" },
             { "tpope/vim-fugitive" },
+            { "tpope/vim-sleuth" },
             -- Add other plugins here
-            { "creativenull/efmls-configs-nvim" }
+            { "creativenull/efmls-configs-nvim" },
+            {
+                "christoomey/vim-tmux-navigator",
+                cmd = {
+                    "TmuxNavigateLeft",
+                    "TmuxNavigateDown",
+                    "TmuxNavigateUp",
+                    "TmuxNavigateRight",
+                    "TmuxNavigatePrevious",
+                },
+                keys = {
+                    { "<c-h>",  "<cmd><C-U>TmuxNavigateLeft<cr>" },
+                    { "<c-j>",  "<cmd><C-U>TmuxNavigateDown<cr>" },
+                    { "<c-k>",  "<cmd><C-U>TmuxNavigateUp<cr>" },
+                    { "<c-l>",  "<cmd><C-U>TmuxNavigateRight<cr>" },
+                    { "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+                },
+            }
         },
         {
             performance = {
@@ -72,14 +91,17 @@ if is_mac then
     )
 
     -- Add ~/.config/nvim/plugins to package.path
-    local config_path = '~/.config/nvim/?.lua'
+    local config_path = '/Users/erik/.config/nvim/?.lua'
     package.path = package.path .. ';' .. config_path
 
     require('plugins.telescope');
     require('plugins.cmp');
     require('plugins.nvim-treesitter');
     require('plugins.lspconfig');
+    require('plugins.colorscheme');
+    require('config.keymaps');
     require('bufferline').setup();
+    require('ibl').setup();
 end
 
 -- Set <space> as the leader key
@@ -123,18 +145,19 @@ local is_git_dir = function()
 end
 
 vim.api.nvim_create_autocmd('VimEnter', {
-  callback = function()
-    local bufferPath = vim.fn.expand('%:p')
-    if vim.fn.isdirectory(bufferPath) ~= 0 then
-      local ts_builtin = require('telescope.builtin')
-      vim.api.nvim_buf_delete(0, { force = true })
-      if is_git_dir() == 0 then
-        ts_builtin.git_files({ show_untracked = true })
-      else
-        ts_builtin.find_files()
-      end
-    end
-  end,
+    callback = function()
+        vim.cmd("colorscheme catppuccin")
+        local bufferPath = vim.fn.expand('%:p')
+        if vim.fn.isdirectory(bufferPath) ~= 0 then
+            local ts_builtin = require('telescope.builtin')
+            vim.api.nvim_buf_delete(0, { force = true })
+            if is_git_dir() == 0 then
+                ts_builtin.git_files({ show_untracked = true })
+            else
+                ts_builtin.find_files()
+            end
+        end
+    end,
 })
 
 
