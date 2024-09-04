@@ -16,6 +16,7 @@ lspconfig.rnix.setup {}
 lspconfig.tsserver.setup {}
 lspconfig.svelte.setup {}
 lspconfig.rust_analyzer.setup {}
+lspconfig.phpactor.setup {}
 
 lspconfig.efm.setup {
   filetypes = vim.tbl_keys(languages),
@@ -83,6 +84,7 @@ if not configs.ls_emmet then
 end
 
 lspconfig.ls_emmet.setup { capabilities = capabilities }
+
 
 
 -- Global mappings.
