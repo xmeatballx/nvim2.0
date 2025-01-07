@@ -13,7 +13,7 @@ capabilities.textDocument.completion.completionItem.snippetSupport = true
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 lspconfig.nil_ls.setup{}
-lspconfig.tsserver.setup {}
+lspconfig.ts_ls.setup {}
 lspconfig.svelte.setup {}
 lspconfig.rust_analyzer.setup {}
 lspconfig.phpactor.setup {}
