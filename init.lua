@@ -146,7 +146,6 @@ end
 
 vim.api.nvim_create_autocmd('VimEnter', {
     callback = function()
-        vim.cmd("colorscheme catppuccin")
         local bufferPath = vim.fn.expand('%:p')
         if vim.fn.isdirectory(bufferPath) ~= 0 then
             local ts_builtin = require('telescope.builtin')
