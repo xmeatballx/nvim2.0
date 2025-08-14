@@ -31,13 +31,17 @@ if is_mac then
                 }
             },
             -- Bufferline
-            { "akinsho/bufferline.nvim",            dependencies = { "nvim-tree/nvim-web-devicons" } },
+            { "akinsho/bufferline.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
             -- Comment
             { "numToStr/Comment.nvim" },
-            -- Language Servers
+            {
+                'stevearc/conform.nvim',
+                opts = {},
+            }, -- Language Servers
             { "neovim/nvim-lspconfig" },
             -- Treesitter
             { "nvim-treesitter/nvim-treesitter",    run = ":TSUpdate" },
+            { "slim-template/vim-slim" },
             -- Completion
             { "hrsh7th/nvim-cmp" },
             { "hrsh7th/cmp-buffer" },
@@ -79,6 +83,9 @@ if is_mac then
             }
         },
         {
+            "shopify/prettier-plugin-liquid"
+        },
+        {
             performance = {
                 rtp = {
                     disabled_plugins = {
@@ -91,7 +98,7 @@ if is_mac then
     )
 
     -- Add ~/.config/nvim/plugins to package.path
-    local config_path = '/Users/erik/.config/nvim/?.lua'
+    local config_path = vim.fn.expand('~/.config/nvim/?.lua')
     package.path = package.path .. ';' .. config_path
 
     require('plugins.telescope');

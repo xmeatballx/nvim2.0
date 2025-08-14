@@ -4,30 +4,29 @@ local configs = require('lspconfig.configs')
 local eslint = require('efmls-configs.linters.eslint')
 local prettier = require('efmls-configs.formatters.prettier')
 local stylua = require('efmls-configs.formatters.stylua')
+local fs = require('efmls-configs.fs')
+local conform = require('conform')
 local languages = {
-  typescript = { eslint, prettier },
-  lua = { stylua },
+  typescript = { "eslint_d", "prettier" },
+  lua = { "stylua" },
+  liquid = { "prettier" },
+  css = { "prettier" },
+  json = { "prettier" }
 }
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-lspconfig.nil_ls.setup{}
-lspconfig.ts_ls.setup {}
+lspconfig.nil_ls.setup {}
+lspconfig.tsserver.setup {}
 lspconfig.svelte.setup {}
 lspconfig.rust_analyzer.setup {}
 lspconfig.phpactor.setup {}
 
-lspconfig.efm.setup {
-  filetypes = vim.tbl_keys(languages),
-  settings = {
-    rootMarkers = { '.git/' },
-    languages = languages,
-  },
-  init_options = {
-    documentFormatting = true,
-    documentRangeFormatting = true,
-  },
+lspconfig.shopify_theme_ls.setup {}
+
+conform.setup {
+  formatters_by_ft = languages;
 }
 
 lspconfig.html.setup {}
@@ -74,6 +73,8 @@ if not configs.ls_emmet then
         'sass',
         'hbs',
         'handlebars',
+        'liquid',
+        'json'
       },
       root_dir = function(fname)
         return vim.loop.cwd()
@@ -121,7 +122,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<C-.>', '<cmd>lua vim.lsp.buf.code_action()<CR>', { noremap = true, silent = true })
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
     vim.keymap.set('n', '<space>f', function()
-      vim.lsp.buf.format { async = true }
+      conform.format { bufnr = ev.buffer }
     end, opts)
   end,
 })

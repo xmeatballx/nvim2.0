@@ -1,0 +1,45 @@
+{
+  "inline_richtext": {
+    "prefix": "_inline_richtext",
+    "body": [
+      "{",
+      "\"type\": \"inline_richtext\",",
+      "\t\"id\": \"$0\",",
+      "\t\"label\": \"$1\"",
+      "}"
+    ]
+  },
+  "heading_size": {
+    "prefix": "_heading_size",
+    "body": [
+      "{",
+      "\t\"type\": \"select\",",
+      "\t\"id\": \"heading_size\",",
+      "\t\"options\": [",
+      "\t\t{",
+      "\t\t\t\"value\": \"h2\",",
+      "\t\t\t\"label\": \"t:sections.all.heading_size.options__1.label\"",
+      "\t\t},",
+      "\t\t{",
+      "\t\t\t\"value\": \"h1\",",
+      "\t\t\t\"label\": \"t:sections.all.heading_size.options__2.label\"",
+      "\t\t},",
+      "\t\t{",
+      "\t\t\t\"value\": \"h0\",",
+      "\t\t\t\"label\": \"t:sections.all.heading_size.options__3.label\"",
+      "\t\t},",
+      "\t\t{",
+      "\t\t\t\"value\": \"hxl\",",
+      "\t\t\t\"label\": \"t:sections.all.heading_size.options__4.label\"",
+      "\t\t},",
+      "\t\t{",
+      "\t\t\t\"value\": \"hxxl\",",
+      "\t\t\t\"label\": \"t:sections.all.heading_size.options__5.label\"",
+      "\t\t}",
+      "\t],",
+      "\t\"default\": \"h1\",",
+      "\t\"label\": \"t:sections.all.heading_size.label\"",
+      "}"
+    ]
+  }
+}

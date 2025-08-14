@@ -11,9 +11,11 @@ if not luasnip_status then
 end
 
 -- load VSCode-like snippets from plugins (e.g., friendly-snippets)
-
-
 require("luasnip/loaders/from_vscode").lazy_load()
+
+-- load custom snippets from ~/.config/nvim/snippets/
+local custom_snippet_path = vim.fn.expand("~/.config/nvim/snippets/")
+require("luasnip.loaders.from_vscode").lazy_load({ paths = { custom_snippet_path } })
 
 vim.opt.completeopt = "menu,menuone,noselect"
 
