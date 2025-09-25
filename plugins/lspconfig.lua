@@ -11,7 +11,8 @@ local languages = {
   lua = { "stylua" },
   liquid = { "prettier" },
   css = { "prettier" },
-  json = { "prettier" }
+  json = { "prettier" },
+  javascript = { "prettier" }
 }
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true

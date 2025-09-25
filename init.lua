@@ -63,6 +63,17 @@ if is_mac then
             { "tpope/vim-fugitive" },
             { "tpope/vim-sleuth" },
             -- Add other plugins here
+            { 
+              'martineausimon/nvim-lilypond-suite',
+              opts = {
+                  lilypond = {
+                      mappings = {
+                          compile = '<leader>m',
+                          open_pdf = '<leader>M'
+                      }
+                  }
+              }
+            },
             { "creativenull/efmls-configs-nvim" },
             {
                 "christoomey/vim-tmux-navigator",
